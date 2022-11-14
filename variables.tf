@@ -98,3 +98,23 @@ variable "tags_environment" {
    default = ""
    description = "" 
 }
+
+variable "publicip_allocation_method" {
+  type = string
+  default = ""
+  description = ""
+}
+
+variable "private_ip_address_allocation" {
+  type = string
+  default = ""
+  description = ""
+}
+
+variable "vnet_address_space" {
+  type = any
+}
+
+variable "subnet_address_prefixes" {
+  type = any
+}
