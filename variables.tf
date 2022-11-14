@@ -16,6 +16,11 @@ variable "rg_name" {
    description = ""
 }
 
+variable "location" {
+  type = string
+  default = ""
+}
+
 variable "vnet" {
   type = string 
    default = ""   
@@ -93,7 +98,3 @@ variable "tags_environment" {
    default = ""
    description = "" 
 }
-
-
-
-
