@@ -61,14 +61,14 @@ resource "azurerm_windows_virtual_machine" "vm" {
   admin_password                 = var.admin_password
 
   os_disk {
-    caching              = var.caching
-    storage_account_type = var.storage_account_type
+    caching                      = var.caching
+    storage_account_type         = var.storage_account_type
   }
 
   source_image_reference {
-    publisher = var.publisher
-    offer     = var.offer
-    sku       = var.sku
-    version   = var.sku_version
+    publisher                    = var.publisher
+    offer                        = var.offer
+    sku                          = var.sku
+    version                      = var.sku_version
   }
 }
