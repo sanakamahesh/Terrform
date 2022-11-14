@@ -21,54 +21,58 @@ provider "azurerm" {
 }
 
 #Target Resource group
-data "azurerm_resource_group" "rg_name" {
+resource "azurerm_resource_group" "rg_name" {
   name                           = var.rg_name
+  location                       = var.location
   }
 
 #Target Virtual Network
-data "azurerm_virtual_network" "vmvnet" {
+resource "azurerm_virtual_network" "vmvnet" {
   name                           = var.vnet
   resource_group_name            = var.rg_name
+  location                       = var.location
+  address_space                  = ["10.0.0.0/16"]
 }
 
 #Target subnet
-data "azurerm_subnet" "vmsubnet" {
+resource "azurerm_subnet" "vmsubnet" {
   name                           = var.subnet
-  resource_group_name            = data.azurerm_resource_group.rg_name.name
-  virtual_network_name           = data.azurerm_virtual_network.vmvnet.name
+  resource_group_name            = azurerm_resource_group.rg_name.name
+  virtual_network_name           = azurerm_virtual_network.vmvnet.name
+  address_prefixes               = ["10.0.2.0/24"]
   }
 
 #Network Interface
 resource "azurerm_network_interface" "vmnic" {
   name                           = "${var.vmname}-NIC"
-  resource_group_name            = data.azurerm_resource_group.rg_name.name
-  location                       = data.azurerm_resource_group.rg_name.location
+  resource_group_name            = azurerm_resource_group.rg_name.name
+  location                       = azurerm_resource_group.rg_name.location
 
   ip_configuration {
   name                           = "${var.vmname}-IP"
-  subnet_id                      = data.azurerm_subnet.vmsubnet.id
+  subnet_id                      = azurerm_subnet.vmsubnet.id
   private_ip_address_allocation  = "Dynamic"
   }
 }
 
 resource "azurerm_windows_virtual_machine" "vm" {
   name                           = var.vmname
-  resource_group_name            = data.azurerm_resource_group.rg_name.name
-  location                       = data.azurerm_resource_group.rg_name.location
+  resource_group_name            = azurerm_resource_group.rg_name.name
+  location                       = azurerm_resource_group.rg_name.location
   network_interface_ids          = [azurerm_network_interface.vmnic.id]
   size                           = var.vm_size
   admin_username                 = var.admin_username
   admin_password                 = var.admin_password
 
   os_disk {
-    caching                      = var.caching
-    storage_account_type         = var.storage_account_type
+    caching              = var.caching
+    storage_account_type = var.storage_account_type
   }
 
   source_image_reference {
-    publisher                    = var.publisher
-    offer                        = var.offer
-    sku                          = var.sku
-    version                      = var.sku_version
+    publisher = var.publisher
+    offer     = var.offer
+    sku       = var.sku
+    version   = var.sku_version
   }
 }
