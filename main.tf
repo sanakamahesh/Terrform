@@ -20,13 +20,13 @@ provider "azurerm" {
   
 }
 
-#Target Resource group
+#Resource group
 resource "azurerm_resource_group" "rg_name" {
   name                           = var.rg_name
   location                       = var.location
   }
 
-#Target Virtual Network
+#Virtual Network
 resource "azurerm_virtual_network" "vmvnet" {
   name                           = var.vnet
   resource_group_name            = var.rg_name
@@ -34,7 +34,7 @@ resource "azurerm_virtual_network" "vmvnet" {
   address_space                  = ["10.0.0.0/16"]
 }
 
-#Target subnet
+#Subnet
 resource "azurerm_subnet" "vmsubnet" {
   name                           = var.subnet
   resource_group_name            = azurerm_resource_group.rg_name.name
