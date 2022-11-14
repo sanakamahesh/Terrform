@@ -31,7 +31,7 @@ resource "azurerm_virtual_network" "vmvnet" {
   name                           = var.vnet
   resource_group_name            = var.rg_name
   location                       = var.location
-  address_space                  = ["10.0.0.0/16"]
+  address_space                  = var.vnet_address_space
 }
 
 #Subnet
@@ -39,7 +39,15 @@ resource "azurerm_subnet" "vmsubnet" {
   name                           = var.subnet
   resource_group_name            = azurerm_resource_group.rg_name.name
   virtual_network_name           = azurerm_virtual_network.vmvnet.name
-  address_prefixes               = ["10.0.2.0/24"]
+  address_prefixes               = var.subnet_address_prefixes 
+  }
+
+#Public IP
+resource "azurerm_public_ip" "publicip" {
+  name                = "${var.vmname}-Public-IP"
+  resource_group_name = azurerm_resource_group.rg_name.name
+  location            = azurerm_resource_group.rg_name.location
+  allocation_method   = var.publicip_allocation_method
   }
 
 #Network Interface
@@ -51,7 +59,8 @@ resource "azurerm_network_interface" "vmnic" {
   ip_configuration {
   name                           = "${var.vmname}-IP"
   subnet_id                      = azurerm_subnet.vmsubnet.id
-  private_ip_address_allocation  = "Dynamic"
+  private_ip_address_allocation  = var.private_ip_address_allocation
+  public_ip_address_id           = azurerm_public_ip.publicip.id
   }
 }
 
